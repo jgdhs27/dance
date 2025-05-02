@@ -867,6 +867,96 @@ export async function leap(
   }
 }
 
+/**
+ * Goto word label
+ */
+export async function wordLabel(
+  _: Context,
+
+  // extend: Argument<boolean>,
+  labelChars: Argument<string> = "abcdefghijklmnopqrstuvwxyz",
+) {
+  ArgumentError.validate("labelsChars", !labelChars.includes(" "), "must not contain a space ' '");
+
+  labelChars = labelChars.toLowerCase();
+
+  ArgumentError.validate(
+    "labels",
+    new Set(labelChars as Iterable<string>).size === [...labelChars].length, "must not reuse characters");
+
+  const labels = [];
+  for (const a of labelChars) {
+    for (const b of labelChars) {
+      labels.push(`${a}${b}`);
+    }
+  }
+
+  const editor = _.editor,
+        doc = _.document,
+        highlightColor = new vscode.ThemeColor("inputValidation.errorBackground"),
+        foregroundColor = new vscode.ThemeColor("input.foreground");
+
+  const wordSelections = Selections.selectWithin(
+    new RegExp("\\w\\w+"), // words with 2 or more characters
+    editor.visibleRanges.flatMap((range) => {
+      return [Selections.fromRange(range)];
+    }),
+  )
+    .sort()
+    .filter(
+      (selection) => !Selections.overlap(selection, _.selections[0]),
+    );
+
+  const labelsToSelections = new Map<string, vscode.Selection>();
+  for (let i = 0; i < wordSelections.length && i < labels.length; i++) {
+    labelsToSelections.set(labels[i], wordSelections[i]);
+  }
+
+  const decorations: vscode.DecorationOptions[] = [];
+
+  // Render labels
+  labelsToSelections.forEach((selection, label) => {
+    const range = new vscode.Range(selection.start, selection.start);
+    const decoration: vscode.DecorationOptions = {
+      range,
+      renderOptions: {
+        after: {
+          contentText: label,
+          backgroundColor: highlightColor,
+          color: foregroundColor,
+          width: "2ch",
+          textDecoration: "none; position: absolute;",
+        },
+      },
+    };
+
+    decorations.push(decoration);
+  });
+
+  const decorationType = vscode.window.createTextEditorDecorationType({
+    before: { textDecoration: "none" },
+  });
+
+  editor.setDecorations(decorationType, decorations);
+
+  let input = "";
+  try {
+    while (input.length < 2) {
+      input += await keypress(_);
+    }
+    const chosenSelection = labelsToSelections.get(input);
+    if (chosenSelection) {
+      // if (extend) {
+        Selections.set([chosenSelection], _);
+      // } else {
+
+      // }
+    }
+  } finally {
+    editor.setDecorations(decorationType, []);
+  }
+}
+
 function preprocessRegExp(re: string) {
   return re.replace(/\(\?#noescape\)/g, "(?<=(?<!\\\\)(?:\\\\{2})*)");
 }
