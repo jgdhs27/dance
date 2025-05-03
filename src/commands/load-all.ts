@@ -1108,6 +1108,18 @@ export const commands: Commands = function () {
   );
   describeAdditionalCommand(
     commands,
+    "dance.seek.wordLabel",
+    CommandDescriptor.Flags.RequiresActiveEditor | CommandDescriptor.Flags.DoNotReplay,
+    [[".seek.wordLabel", { shift: "select", $exclude: [] }]],
+  );
+  describeAdditionalCommand(
+    commands,
+    "dance.seek.wordLabel.extend",
+    CommandDescriptor.Flags.RequiresActiveEditor | CommandDescriptor.Flags.DoNotReplay,
+    [[".seek.wordLabel", { shift: "extend", $exclude: [] }]],
+  );
+  describeAdditionalCommand(
+    commands,
     "dance.select.down.jump",
     CommandDescriptor.Flags.RequiresActiveEditor | CommandDescriptor.Flags.DoNotReplay,
     [[".select.vertically", { direction: 1, shift: "jump" , $exclude: [] }]],

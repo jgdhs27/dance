@@ -1552,7 +1552,17 @@
       },
       {
         "command": "dance.seek.wordLabel",
-        "title": "Goto word label",
+        "title": "Goto word",
+        "category": "Dance"
+      },
+      {
+        "command": "dance.seek.wordLabel",
+        "title": "Goto word",
+        "category": "Dance"
+      },
+      {
+        "command": "dance.seek.wordLabel.extend",
+        "title": "Goto word (extend)",
         "category": "Dance"
       },
       {

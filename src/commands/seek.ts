@@ -868,7 +868,12 @@ export async function leap(
 }
 
 /**
- * Goto word label
+ * Goto word
+ *
+ * | Title              | Identifier         | Command                                         |
+ * | -------------------| ------------------ | ----------------------------------------------- |
+ * | Goto word          | `wordLabel`        | `[".seek.wordLabel", { shift: "select", ... }]` |
+ * | Goto word (extend) | `wordLabel.extend` | `[".seek.wordLabel", { shift: "extend", ... }]` |
  */
 export async function wordLabel(
   _: Context,
