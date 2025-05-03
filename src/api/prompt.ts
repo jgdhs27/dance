@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { Context } from "./context";
-import { set as setSelections } from "./selections";
+import { set as setSelections } from "./selection";
 import { ArgumentError, CancellationError } from "../utils/errors";
 import { newRegExp } from "../utils/regexp";
 

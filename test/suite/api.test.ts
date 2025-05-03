@@ -1142,7 +1142,7 @@ suite("API tests", function () {
 
   });
 
-  suite("./src/api/selections.ts", function () {
+  suite("./src/api/selection.ts", function () {
 
     test("function set", async function () {
       const editorState = extension.editors.getState(editor)!,

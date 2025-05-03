@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 import { Context } from "./context";
-import { track } from "./selections";
+import { track } from "./selection";
 import type { Register } from "../state/registers";
 
 /**

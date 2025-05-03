@@ -39,7 +39,7 @@ export * as Positions from "./positions";
 /**
  * Operations on `vscode.Selection`s.
  */
-export * as Selections from "./selections";
+export * as Selections from "./selection";
 
 /**
  * Operations on `Register`s.

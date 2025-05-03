@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 import { Context, edit } from "../context";
 import * as Positions from "../positions";
-import * as Selections from "../selections";
+import * as Selections from "../selection";
 import { Direction } from "../types";
 import * as TrackedSelection from "../../utils/tracked-selection";
 
