@@ -7,6 +7,7 @@ import type { Extension } from "../state/extension";
 import type { Mode } from "../state/modes";
 import { EditNotAppliedError, EditorRequiredError } from "../utils/errors";
 import { noUndoStops, performDummyEdit } from "../utils/misc";
+import { Selections } from "./selections";
 
 let currentContext: ContextWithoutActiveEditor | undefined;
 
@@ -332,11 +333,12 @@ export class Context extends ContextWithoutActiveEditor {
   public get selections() {
     const editor = this.editor as vscode.TextEditor;
 
-    if (this.selectionBehavior === SelectionBehavior.Character) {
-      return selectionsFromCharacterMode(editor.selections, editor.document);
-    }
+      const rawSelections =
+        this.selectionBehavior === SelectionBehavior.Character
+          ? selectionsFromCharacterMode(editor.selections, editor.document)
+          : editor.selections;
 
-    return editor.selections;
+    return new Selections(rawSelections.slice());
   }
 
   /**
@@ -345,14 +347,16 @@ export class Context extends ContextWithoutActiveEditor {
    * If the current selection behavior is `Character`, strictly forward-facing
    * (i.e. `active > anchor`) selections will be made shorter by one character.
    */
-  public set selections(selections: readonly vscode.Selection[]) {
+  public set selections(selections: Selections) {
     const editor = this.editor as vscode.TextEditor;
 
-    if (this.selectionBehavior === SelectionBehavior.Character) {
-      selections = selectionsToCharacterMode(selections, editor.document);
-    }
+      let rawSelections = selections.getSelections();
 
-    editor.selections = selections as vscode.Selection[];
+    if (this.selectionBehavior === SelectionBehavior.Character) {
+      editor.selections = selectionsToCharacterMode(rawSelections, editor.document);
+    } else {
+      editor.selections = rawSelections as vscode.Selection[];
+    }
   }
 
   /**

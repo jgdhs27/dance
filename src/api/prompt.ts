@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 
 import { Context } from "./context";
-import { set as setSelections } from "./selection";
 import { ArgumentError, CancellationError } from "../utils/errors";
 import { newRegExp } from "../utils/regexp";
+import { Selections } from "./selections";
 
 const actionEvent = new vscode.EventEmitter<Parameters<typeof notifyPromptActionRequested>[0]>();
 
@@ -332,7 +332,7 @@ export async function manipulateSelectionsInteractively<R extends object, N exte
   }
 
   function undo() {
-    setSelections(selections);
+    selections.setCurrent();
   }
 
   if (argument[inputName] === undefined) {

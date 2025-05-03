@@ -28,6 +28,10 @@ export class Selections {
     return this.primarySelection;
   }
 
+  public getSelections() {
+    return this.selections;
+  }
+
   public sort(): void {
     this.selections = this.selections.sort((a, b) =>
       a.start.compareTo(b.start)
