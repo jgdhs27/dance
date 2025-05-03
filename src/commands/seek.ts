@@ -873,8 +873,8 @@ export async function leap(
 export async function wordLabel(
   _: Context,
 
-  // extend: Argument<boolean>,
   labelChars: Argument<string> = "abcdefghijklmnopqrstuvwxyz",
+  shift = Shift.Select,
 ) {
   ArgumentError.validate("labelsChars", !labelChars.includes(" "), "must not contain a space ' '");
 
@@ -904,7 +904,7 @@ export async function wordLabel(
   )
     .sort()
     .filter(
-      (selection) => !Selections.overlap(selection, _.selections[0]),
+      (selection) => !selection.contains(_.selections[0].active),
     );
 
   const labelsToSelections = new Map<string, vscode.Selection>();
@@ -946,11 +946,27 @@ export async function wordLabel(
     }
     const chosenSelection = labelsToSelections.get(input);
     if (chosenSelection) {
-      // if (extend) {
+      if (shift === Shift.Extend) {
+        const primarySelection = _.selections[0];
+        const direction = chosenSelection.start.isBefore(primarySelection.active)
+          ? Direction.Backward
+          : Direction.Forward;
+        const newSelection =
+          direction === Direction.Backward
+            ? Selections.fromStartEnd(
+              Selections.start(chosenSelection),
+              Selections.end(primarySelection),
+              true,
+            )
+            : Selections.fromStartEnd(
+              Selections.start(primarySelection),
+              Selections.end(chosenSelection),
+              false,
+            );
+        Selections.set([newSelection], _);
+      } else {
         Selections.set([chosenSelection], _);
-      // } else {
-
-      // }
+      }
     }
   } finally {
     editor.setDecorations(decorationType, []);

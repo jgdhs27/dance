@@ -499,7 +499,7 @@ export const commands: Commands = function () {
     ),
     "dance.seek.wordLabel": new CommandDescriptor(
       "dance.seek.wordLabel",
-      (_, argument) => _.runAsync(async (_) => await seek_wordLabel(_, argument["extend"], argument["labelChars"])),
+      (_, argument) => _.runAsync(async (_) => await seek_wordLabel(_, argument["labelChars"], getShift(argument))),
       CommandDescriptor.Flags.RequiresActiveEditor,
     ),
     "dance.select.buffer": new CommandDescriptor(
